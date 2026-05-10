@@ -1,6 +1,4 @@
 const sql = require('mssql');
-// Tạm thời không dùng dotenv để test hardcode
-// require('dotenv').config(); 
 
 const config = {
     user: process.env.DB_USER,

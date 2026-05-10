@@ -26,6 +26,9 @@ app.use('/api/benh-nhan', require('./src/routes/BenhNhanRoutes'));
 // Phiếu khám
 app.use('/api/phieu-kham', require('./src/routes/PhieuKhamRoutes'));
 
+// Loại bệnh
+app.use('/api/benh', require('./src/routes/LoaiBenhRoutes'));
+
 
 // Xử lý route không tồn tại (404)
 app.use((req, res) => {
