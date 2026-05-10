@@ -1,9 +1,9 @@
-const thamSoService = require('../services/ThamSoService');
+const ThamSoService = require('../services/ThamSoService');
 
 class ThamSoController {
     async getAll(req, res) {
         try {
-            const thamSo = await thamSoService.getAllThamSo();
+            const thamSo = await ThamSoService.getAllThamSo();
             res.status(200).json({
                 status: 'success',
                 data: thamSo

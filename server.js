@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const rootRoutes = require('./src/routes/index');
+const rootRoutes = require('./src/routes/Index');
 const { sendError } = require('./src/utils/responseHelper');
 
 const app = express();
@@ -15,10 +15,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', rootRoutes);
 
 // Đăng nhập
-app.use('/api/auth', require('./src/routes/authRoutes'));
+app.use('/api/auth', require('./src/routes/AuthRoutes'));
 
-//Tham số
-app.use('/api/tham-so', require('./src/routes/thamSoRoutes'));
+// Tham số
+app.use('/api/tham-so', require('./src/routes/ThamSoRoutes'));
+
+// Bệnh nhân
+app.use('/api/benh-nhan', require('./src/routes/BenhNhanRoutes'));
+
+// Phiếu khám
+app.use('/api/phieu-kham', require('./src/routes/PhieuKhamRoutes'));
 
 
 // Xử lý route không tồn tại (404)

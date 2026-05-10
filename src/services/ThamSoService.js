@@ -1,12 +1,12 @@
-const thamSoRepo = require('../repositories/ThamSoRepo');
+const ThamSoRepo = require('../repositories/ThamSoRepo');
 
 class ThamSoService {
     async getAllThamSo() {
-        return await thamSoRepo.getAll();
+        return await ThamSoRepo.getAll();
     }
     
     async getThamSoByName(tenThamSo) {
-        return await thamSoRepo.getByName(tenThamSo);
+        return await ThamSoRepo.getByName(tenThamSo);
     }
 }
 
