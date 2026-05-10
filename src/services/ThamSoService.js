@@ -5,8 +5,8 @@ class ThamSoService {
         return await ThamSoRepo.getAll();
     }
     
-    async getThamSoByName(tenThamSo) {
-        return await ThamSoRepo.getByName(tenThamSo);
+    async getThamSoByName(TenThamSo) {
+        return await ThamSoRepo.getByName(TenThamSo);
     }
 }
 
