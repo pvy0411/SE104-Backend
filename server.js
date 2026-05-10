@@ -14,6 +14,13 @@ app.use(express.urlencoded({ extended: true }));
 // Định tuyến API
 app.use('/api', rootRoutes);
 
+// Đăng nhập
+app.use('/api/auth', require('./src/routes/authRoutes'));
+
+//Tham số
+app.use('/api/tham-so', require('./src/routes/thamSoRoutes'));
+
+
 // Xử lý route không tồn tại (404)
 app.use((req, res) => {
     res.status(404).json({
@@ -24,7 +31,7 @@ app.use((req, res) => {
 
 // Middleware xử lý lỗi tổng (Bắt lỗi từ các luồng không bắt được)
 app.use((err, req, res, next) => {
-    console.error('🔥 Lỗi hệ thống:', err.stack);
+    console.error('Lỗi hệ thống:', err.stack);
     sendError(res, 'Đã xảy ra lỗi nghiêm trọng tại máy chủ.');
 });
 
@@ -35,3 +42,4 @@ app.listen(PORT, () => {
     // Kích hoạt kết nối DB ngay khi chạy server
     require('./src/config/database'); 
 });
+
