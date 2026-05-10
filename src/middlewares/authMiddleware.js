@@ -1,36 +1,35 @@
 const jwt = require('jsonwebtoken');
 
-const AuthMiddleware = (req, res, next) => {
-    // 1. Lấy token từ header của request gửi lên
-    const AuthHeader = req.header('Authorization');
-
-    // Nếu không có header Authorization, từ chối ngay
-    if (!AuthHeader) {
-        return res.status(401).json({ 
-            status: 'error', 
-            message: 'Truy cập bị từ chối! Không tìm thấy Token.' 
-        });
+// MIDDLEWARE XÁC THỰC 
+const XacThuc = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    if (!token) {
+        return res.status(401).json({ message: 'Không tìm thấy token, vui lòng đăng nhập!' });
     }
-
     try {
-        // Token thường gửi theo chuẩn "Bearer <chuỗi_token>", nên ta cần cắt lấy phần đuôi
-        const token = AuthHeader.startsWith('Bearer ') ? AuthHeader.split(' ')[1] : AuthHeader;
-
-        // 2. Dùng JWT_SECRET để giải mã và xác thực
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // 3. Nếu đúng, lưu thông tin user (maNV, tenNV, maCV) vào request để các API sau xài
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'YOUR_SECRET_KEY'); 
         req.user = decoded; 
-        
-        // Cho phép đi tiếp vào Controller
-        next(); 
-    } catch (error) {
-        // Nếu token sai chữ ký hoặc hết hạn
-        return res.status(401).json({ 
-            status: 'error', 
-            message: 'Token không hợp lệ hoặc đã hết hạn!' 
-        });
+        next();
+    } 
+    catch (error) {
+        return res.status(401).json({ message: 'Token không hợp lệ hoặc đã hết hạn!' });
     }
 };
 
-module.exports = AuthMiddleware;
+// MIDDLEWARE PHÂN QUYỀN
+const PhanQuyen = (...danhSachQuyen) => {
+    return (req, res, next) => {
+        if (!req.user || !req.user.TenChucVu) {
+            return res.status(401).json({ message: 'Lỗi xác thực: Không tìm thấy thông tin chức vụ!' });
+        }
+        const chucVu = req.user.TenChucVu; 
+        
+        if (chucVu === 'Admin' || danhSachQuyen.includes(chucVu)) {
+            next(); 
+        } else {
+            res.status(403).json({ message: `Lỗi phân quyền: Chức vụ '${chucVu}' không được phép thực hiện thao tác này` });
+        }
+    };
+};
+
+module.exports = { XacThuc, PhanQuyen };

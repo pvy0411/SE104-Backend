@@ -179,38 +179,3 @@ CREATE TABLE THAMSO
 	GiaTri DECIMAL(18,2) NOT NULL
 );
 
--- 2. Thêm dữ liệu cho bảng CHUCVU (MaCV sẽ tự tăng 1, 2, 3)
-INSERT INTO CHUCVU (TenCV) VALUES (N'Quản lý');
-INSERT INTO CHUCVU (TenCV) VALUES (N'Bác sĩ');
-INSERT INTO CHUCVU (TenCV) VALUES (N'Lễ tân');
-
--- 3. Thêm dữ liệu cho bảng CHUYENKHOA (MaCK sẽ tự tăng 1, 2)
-INSERT INTO CHUYENKHOA (TenCK) VALUES (N'Đa khoa');
-INSERT INTO CHUYENKHOA (TenCK) VALUES (N'Nội tổng quát');
-
--- 4. Thêm dữ liệu cho bảng NHANVIEN
--- Tài khoản cho bạn (Quản lý - MaCV: 1)
-INSERT INTO NHANVIEN (TenNV, GioiTinh, NamSinh, SDT, MaCV, MaCK) 
-VALUES (N'Nguyễn Trần Phương Vy', 'Nu', 2004, '0901234567', 1, 1);
-
--- Tài khoản cho đồng đội (Bác sĩ - MaCV: 2)
-INSERT INTO NHANVIEN (TenNV, GioiTinh, NamSinh, SDT, MaCV, MaCK) 
-VALUES (N'Lê Thị Thu', 'Nu', 2004, '0907654321', 2, 2);
-
--- 5. Thêm dữ liệu cho bảng TAIKHOAN (MaNV tương ứng là 1 và 2)
--- Tài khoản admin
-INSERT INTO TAIKHOAN (TenDangNhap, MatKhau, MaNV) 
-VALUES ('admin', '123456', 1);
-
--- Tài khoản bác sĩ
-INSERT INTO TAIKHOAN (TenDangNhap, MatKhau, MaNV) 
-VALUES ('bacsi01', 'password', 2);
-
-INSERT INTO THAMSO (TenThamSo, GiaTri) VALUES (N'SoBenhNhanToiDa', 40);
-INSERT INTO THAMSO (TenThamSo, GiaTri) VALUES (N'TienKham', 30000);
-
-
-INSERT INTO LOAIBENH (TenBenh) VALUES (N'Viêm họng hạt');
-INSERT INTO LOAIBENH (TenBenh) VALUES (N'Cảm cúm');
-INSERT INTO LOAIBENH (TenBenh) VALUES (N'Đau dạ dày');
-INSERT INTO LOAIBENH (TenBenh) VALUES (N'Viêm phế quản');

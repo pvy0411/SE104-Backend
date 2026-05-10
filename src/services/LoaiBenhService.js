@@ -6,8 +6,6 @@ class LoaiBenhService {
     }
 
     async taoChanDoan(data) {
-        // Có thể thêm logic kiểm tra xem Phiếu khám có tồn tại không ở đây
-        // Nhưng để tối ưu, ta tiến hành lưu luôn
         await LoaiBenhRepo.addChanDoan(
             data.MaPK, 
             data.MaLoaiBenh, 
