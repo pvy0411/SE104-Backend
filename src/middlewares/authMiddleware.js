@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
 
-const authMiddleware = (req, res, next) => {
+const AuthMiddleware = (req, res, next) => {
     // 1. Lấy token từ header của request gửi lên
-    const authHeader = req.header('Authorization');
+    const AuthHeader = req.header('Authorization');
 
     // Nếu không có header Authorization, từ chối ngay
-    if (!authHeader) {
+    if (!AuthHeader) {
         return res.status(401).json({ 
             status: 'error', 
             message: 'Truy cập bị từ chối! Không tìm thấy Token.' 
@@ -14,7 +14,7 @@ const authMiddleware = (req, res, next) => {
 
     try {
         // Token thường gửi theo chuẩn "Bearer <chuỗi_token>", nên ta cần cắt lấy phần đuôi
-        const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+        const token = AuthHeader.startsWith('Bearer ') ? AuthHeader.split(' ')[1] : AuthHeader;
 
         // 2. Dùng JWT_SECRET để giải mã và xác thực
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -33,4 +33,4 @@ const authMiddleware = (req, res, next) => {
     }
 };
 
-module.exports = authMiddleware;
+module.exports = AuthMiddleware;

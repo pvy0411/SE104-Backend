@@ -12,8 +12,8 @@ class ThamSoRepo {
     async getByName(tenThamSo) {
         const pool = await poolPromise;
         const result = await pool.request()
-            .input('tenThamSo', sql.NVarChar, tenThamSo)
-            .query('SELECT GiaTri FROM THAMSO WHERE TenThamSo = @tenThamSo');
+            .input('TenThamSo', sql.NVarChar, tenThamSo)
+            .query('SELECT GiaTri FROM THAMSO WHERE TenThamSo = @TenThamSo');
         
         if (result.recordset.length > 0) {
             return result.recordset[0].GiaTri;
