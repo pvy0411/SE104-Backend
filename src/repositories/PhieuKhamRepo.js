@@ -1,29 +1,26 @@
 const { sql, poolPromise } = require('../config/database');
 
 class PhieuKhamRepo {
-    // Đếm số lượng bệnh nhân đã tiếp nhận trong 1 ngày cụ thể
-    async countByDate(NgayKham) {
+    async create(data) {
         const pool = await poolPromise;
         const result = await pool.request()
-            .input('NgayKham', sql.Date, NgayKham)
-            .query('SELECT COUNT(*) AS Total FROM PHIEUKHAM WHERE NgayKham = @NgayKham');
-        return result.recordset[0].Total;
-    }
-
-    // Tạo phiếu khám mới
-    async create(MaNV, MaBN, NgayKham) {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('MaNV', sql.Int, MaNV)
-            .input('MaBN', sql.Int, MaBN)
-            .input('NgayKham', sql.Date, NgayKham)
+            .input('MaNV', sql.Int, data.MaNV)
+            .input('MaBN', sql.Int, data.MaBN)
+            .input('NgayKham', sql.Date, data.NgayKham)
             .query(`
                 INSERT INTO PHIEUKHAM (MaNV, MaBN, NgayKham)
-                OUTPUT INSERTED.MaPK 
+                OUTPUT INSERTED.MaPK
                 VALUES (@MaNV, @MaBN, @NgayKham)
             `);
         return result.recordset[0].MaPK;
     }
-}
 
+    async countByDate(date) {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('date', sql.Date, date)
+            .query('SELECT COUNT(*) as Count FROM PHIEUKHAM WHERE NgayKham = @date');
+        return result.recordset[0].Count;
+    }
+}
 module.exports = new PhieuKhamRepo();

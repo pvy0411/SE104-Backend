@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const ThamSoController = require('../controllers/ThamSoController');
-const AuthMiddleware = require('../middlewares/AuthMiddleware');
+const { XacThuc, PhanQuyen } = require('../middlewares/AuthMiddleware');
 
-// Route này yêu cầu phải có Token hợp lệ
-router.get('/', AuthMiddleware, ThamSoController.getAll);
+router.get('/', XacThuc, ThamSoController.getAll);
+router.get('/:name', XacThuc, ThamSoController.getByName);
+router.put('/:name', XacThuc, PhanQuyen('Admin'), ThamSoController.update);
 
 module.exports = router;
