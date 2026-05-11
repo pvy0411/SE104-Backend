@@ -1,40 +1,81 @@
 const LoaiBenhService = require('../services/LoaiBenhService');
 
 class LoaiBenhController {
-    // API GET: Lấy danh sách loại bệnh
+    // Lấy danh sách tất cả loại bệnh
     async getAll(req, res) {
         try {
-            const listLoaiBenh = await LoaiBenhService.getDanhSachLoaiBenh();
+            const data = await LoaiBenhService.getAll();
             res.status(200).json({
                 status: 'success',
-                data: listLoaiBenh
+                data: data
             });
         } catch (error) {
-            res.status(500).json({ status: 'error', message: error.message });
+            res.status(500).json({
+                status: 'error',
+                message: error.message
+            });
         }
     }
 
-    // API POST: Thêm chẩn đoán
-    async createChanDoan(req, res) {
+    // Thêm loại bệnh mới (Dòng số 7 bên Route gọi hàm này)
+    async create(req, res) {
         try {
-            const { MaPK, MaLoaiBenh, TrieuChung, GhiChu } = req.body;
-
-            if (!MaPK || !MaLoaiBenh) {
+            const { TenBenh } = req.body; // Lấy TenBenh từ body JSON gửi lên
+            
+            if (!TenBenh) {
                 return res.status(400).json({ 
                     status: 'error', 
-                    message: 'Vui lòng cung cấp Mã phiếu khám và Mã loại bệnh!' 
+                    message: 'Vui lòng cung cấp tên loại bệnh!' 
                 });
             }
 
-            const result = await LoaiBenhService.taoChanDoan(req.body);
-
+            const id = await LoaiBenhService.create(TenBenh);
             res.status(201).json({
                 status: 'success',
-                message: 'Đã lưu chẩn đoán bệnh thành công!',
+                message: 'Thêm loại bệnh thành công',
+                MaLoaiBenh: id
+            });
+        } catch (error) {
+            res.status(error.status || 500).json({
+                status: 'error',
+                message: error.message
+            });
+        }
+    }
+
+    // Cập nhật thông tin loại bệnh
+    async update(req, res) {
+        try {
+            const maLoaiBenh = req.params.id;
+            const { TenBenh } = req.body;
+
+            const result = await LoaiBenhService.update(maLoaiBenh, TenBenh);
+            res.status(200).json({
+                status: 'success',
                 data: result
             });
         } catch (error) {
-            res.status(400).json({ status: 'error', message: error.message });
+            res.status(error.status || 500).json({
+                status: 'error',
+                message: error.message
+            });
+        }
+    }
+
+    // Xóa loại bệnh
+    async delete(req, res) {
+        try {
+            const maLoaiBenh = req.params.id;
+            const result = await LoaiBenhService.delete(maLoaiBenh);
+            res.status(200).json({
+                status: 'success',
+                data: result
+            });
+        } catch (error) {
+            res.status(error.status || 500).json({
+                status: 'error',
+                message: error.message
+            });
         }
     }
 }
