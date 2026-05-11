@@ -1,6 +1,12 @@
 const { sql, poolPromise } = require('../config/database');
 
 class ThamSoRepo {
+    async getAll() {
+        const pool = await poolPromise;
+        const result = await pool.request().query('SELECT * FROM THAMSO');
+        return result.recordset;
+    }
+
     async getByName(name) {
         const pool = await poolPromise;
         const result = await pool.request()
