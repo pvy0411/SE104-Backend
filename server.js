@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const rootRoutes = require('./src/routes/Index');
+const rootRoutes = require('./src/routes/index');
 const { sendError } = require('./src/utils/responseHelper');
 
 const app = express();
@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', rootRoutes);
 
 // Kiểm tra hệ thống
-app.use('/api/health-check', require('./src/routes/Index'));
+app.use('/api/health-check', require('./src/routes/index'));
 
 // Đăng nhập
 app.use('/api/auth', require('./src/routes/AuthRoutes'));
