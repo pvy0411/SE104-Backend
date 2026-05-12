@@ -14,6 +14,27 @@ app.use(express.urlencoded({ extended: true }));
 // Định tuyến API
 app.use('/api', rootRoutes);
 
+// Kiểm tra hệ thống
+app.use('/api/health-check', require('./src/routes/Index'));
+
+// Đăng nhập
+app.use('/api/auth', require('./src/routes/AuthRoutes'));
+
+// Nhân viên
+app.use('/api/nhan-vien', require('./src/routes/NhanVienRoutes'));
+
+// Tham số
+app.use('/api/tham-so', require('./src/routes/ThamSoRoutes'));
+
+// Bệnh nhân
+app.use('/api/benh-nhan', require('./src/routes/BenhNhanRoutes'));
+
+// Phiếu khám
+app.use('/api/phieu-kham', require('./src/routes/PhieuKhamRoutes'));
+
+// Loại bệnh
+app.use('/api/benh', require('./src/routes/LoaiBenhRoutes'));
+
 // Thuốc
 app.use('/api/thuoc', require('./src/routes/ThuocRoutes'));
 
