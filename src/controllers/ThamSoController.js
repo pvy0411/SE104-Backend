@@ -1,26 +1,26 @@
 const ThamSoService = require('../services/ThamSoService');
 
 class ThamSoController {
-    async getAll(req, res) {
+    async GetAll(req, res) {
         try {
-            const thamSo = await ThamSoService.getAllThamSo();
+            const thamSo = await ThamSoService.GetAllThamSo();
             res.status(200).json({ status: 'success', data: thamSo });
         } catch (error) {
             res.status(500).json({ status: 'error', message: error.message });
         }
     }
 
-    async getByName(req, res) {
+    async GetByName(req, res) {
         try {
             const { name } = req.params;
-            const thamSo = await ThamSoService.getThamSoByName(name);
+            const thamSo = await ThamSoService.GetThamSoByName(name);
             res.status(200).json({ status: 'success', data: thamSo });
         } catch (error) {
             res.status(500).json({ status: 'error', message: error.message });
         }
     }
 
-    async update(req, res) {
+    async Update(req, res) {
         try {
             const name = req.params.name;
             const { GiaTri } = req.body; 
@@ -29,7 +29,7 @@ class ThamSoController {
                 return res.status(400).json({ status: 'error', message: 'Vui lòng cung cấp GiaTri mới!' });
             }
 
-            const result = await ThamSoService.updateThamSo(name, GiaTri);
+            const result = await ThamSoService.UpdateThamSo(name, GiaTri);
             res.status(200).json({ status: 'success', data: result });
         } catch (error) {
             const statusCode = error.status || 500;

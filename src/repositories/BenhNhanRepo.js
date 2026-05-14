@@ -2,7 +2,7 @@ const { sql, poolPromise } = require('../config/database');
 
 class BenhNhanRepo {
     // Lấy danh sách toàn bộ bệnh nhân (Cho Lễ tân xem)
-    async getAll() {
+    async GetAll() {
         const pool = await poolPromise;
         const result = await pool.request()
             .query('SELECT * FROM BENHNHAN');
@@ -10,7 +10,7 @@ class BenhNhanRepo {
     }
 
     // Lấy thông tin 1 bệnh nhân theo ID (Rất cần thiết cho Service)
-    async getById(MaBN) {
+    async GetById(MaBN) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('MaBN', sql.Int, MaBN)
@@ -19,7 +19,7 @@ class BenhNhanRepo {
     }
 
     // Kiểm tra bệnh nhân đã tồn tại qua CCCD
-    async checkExists(cccd) {
+    async CheckExists(cccd) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('cccd', sql.VarChar, cccd)
@@ -28,7 +28,7 @@ class BenhNhanRepo {
     }
 
     // Thêm bệnh nhân mới
-    async create(data) {
+    async Create(data) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('TenBN', sql.NVarChar, data.TenBN)
@@ -47,7 +47,7 @@ class BenhNhanRepo {
     }
 
     // Kiểm tra xem bệnh nhân đã từng khám bệnh chưa (Đổi input tên cột cho chuẩn DB)
-    async checkCoPhieuKham(MaBN) {
+    async CheckCoPhieuKham(MaBN) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('MaBN', sql.Int, MaBN)
@@ -56,7 +56,7 @@ class BenhNhanRepo {
     }
 
     // Cập nhật thông tin bệnh nhân (Sửa lại tên cột cho ĐÚNG VỚI DATABASE)
-    async update(MaBN, dataUpdate) {
+    async Update(MaBN, dataUpdate) {
         const pool = await poolPromise;
         await pool.request()
             .input('MaBN', sql.Int, MaBN)
@@ -75,7 +75,7 @@ class BenhNhanRepo {
     }
 
     // Xóa bệnh nhân
-    async remove(MaBN) {
+    async Remove(MaBN) {
         const pool = await poolPromise;
         await pool.request()
             .input('MaBN', sql.Int, MaBN)

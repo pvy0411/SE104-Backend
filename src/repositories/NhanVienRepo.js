@@ -1,7 +1,7 @@
 const { sql, poolPromise } = require('../config/database');
 
 class NhanVienRepo {
-    async getAll() {
+    async GetAll() {
         const pool = await poolPromise;
         const result = await pool.request().query(`
             SELECT NV.MaNV, NV.TenNV, NV.GioiTinh, NV.NamSinh, NV.SDT, 
@@ -14,7 +14,7 @@ class NhanVienRepo {
         return result.recordset;
     }
 
-    async getById(MaNV) {
+    async GetById(MaNV) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('MaNV', sql.Int, MaNV)
@@ -22,7 +22,7 @@ class NhanVienRepo {
         return result.recordset[0];
     }
 
-    async checkUsernameExist(username) {
+    async CheckUsernameExist(username) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('username', sql.VarChar, username)
@@ -31,7 +31,7 @@ class NhanVienRepo {
     }
 
     // Tạo Nhân viên + Tài khoản cùng lúc
-    async create(data) {
+    async Create(data) {
         const pool = await poolPromise;
         const transaction = new sql.Transaction(pool);
         await transaction.begin();
@@ -72,7 +72,7 @@ class NhanVienRepo {
     }
 
     // Cập nhật thông tin nhân sự
-    async update(MaNV, data) {
+    async Update(MaNV, data) {
         const pool = await poolPromise;
         await pool.request()
             .input('MaNV', sql.Int, MaNV)
@@ -82,7 +82,7 @@ class NhanVienRepo {
             .query('UPDATE NHANVIEN SET TenNV = @TenNV, SDT = @SDT, MaCK = @MaCK WHERE MaNV = @MaNV');
     }
 
-    async checkCoPhieuKham(MaNV) {
+    async CheckCoPhieuKham(MaNV) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('MaNV', sql.Int, MaNV)
@@ -91,7 +91,7 @@ class NhanVienRepo {
     }
 
     // Xóa tài khoản trước, xóa nhân viên sau
-    async remove(MaNV) {
+    async Remove(MaNV) {
         const pool = await poolPromise;
         const transaction = new sql.Transaction(pool);
         await transaction.begin();
