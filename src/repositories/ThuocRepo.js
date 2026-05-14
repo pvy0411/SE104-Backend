@@ -32,67 +32,66 @@ exports.SearchThuocByName = async (keyword) => {
     return result.recordset;
 };
 
-exports.UpdateInventoryAndPrice = async (maThuoc, soLuong, donGiaBan, transaction) => {
-  const request = transaction ? transaction.request() : (await poolPromise).request();
+exports.UpdateInventoryAndPrice = async (MaThuoc, SoLuong, DonGiaBan, transaction) => {
+  const request = transaction.request();
   await request
-    .input('MaThuoc', sql.NVarChar, maThuoc)
-    .input('SoLuong', sql.Int, soLuong)
-    .input('DonGia', sql.Float, donGiaBan)
+    .input('MaThuoc', sql.NVarChar, MaThuoc)
+    .input('SoLuong', sql.Int, SoLuong)
+    .input('DonGia', sql.Float, DonGiaBan)
     .query('UPDATE THUOC SET SoLuongTon = SoLuongTon + @SoLuong, DonGiaBan = @DonGia WHERE MaThuoc = @MaThuoc');
 };
 
-exports.UpdateStock = async (maThuoc, soLuongThayDoi, transaction) => {
-  const request = transaction ? transaction.request() : (await poolPromise).request();
+exports.UpdateStock = async (MaThuoc, SoLuongThayDoi, transaction) => {
+  const request = transaction.request();
   await request
-    .input('MaThuoc', sql.NVarChar, maThuoc)
-    .input('SoLuong', sql.Int, soLuongThayDoi) // nếu là xuất/kê đơn -> SoLuong âm, nếu nhập -> SoLuong duong
+    .input('MaThuoc', sql.NVarChar, MaThuoc)
+    .input('SoLuong', sql.Int, SoLuongThayDoi) 
     .query('UPDATE THUOC SET SoLuongTon = SoLuongTon + @SoLuong WHERE MaThuoc = @MaThuoc');
 };
 
 exports.CreateThuoc = async (thuoc) => {
   const pool = await poolPromise;
   await pool.request()
-    .input('MaThuoc',    sql.NVarChar, thuoc.maThuoc)
-    .input('TenThuoc',   sql.NVarChar, thuoc.tenThuoc)
-    .input('DonGiaBan',  sql.Float,    thuoc.donGiaBan || 0)
-    .input('SoLuongTon', sql.Int,      thuoc.soLuongTon || 0)
-    .input('MaCachDung', sql.NVarChar, thuoc.maCachDung)
-    .input('MaDVT',      sql.NVarChar, thuoc.maDVT)
+    .input('TenThuoc', sql.NVarChar, thuoc.TenThuoc)
+    .input('DonGiaBan', sql.Float, thuoc.DonGiaBan || 0)
+    .input('SoLuongTon', sql.Int, thuoc.SoLuongTon || 0)
+    .input('MaCachDung', sql.NVarChar, thuoc.MaCachDung)
+    .input('MaDVT', sql.NVarChar, thuoc.MaDVT)
     .query(`
-      INSERT INTO THUOC (MaThuoc, TenThuoc, DonGiaBan, SoLuongTon, MaCachDung, MaDVT)
-      VALUES (@MaThuoc, @TenThuoc, @DonGiaBan, @SoLuongTon, @MaCachDung, @MaDVT)
+      INSERT INTO THUOC (TenThuoc, DonGiaBan, SoLuongTon, MaCachDung, MaDVT)
+      VALUES (@TenThuoc, @DonGiaBan, @SoLuongTon, @MaCachDung, @MaDVT)
     `);
 };
 
-exports.UpdateThuoc = async (maThuoc, thuoc) => {
+exports.UpdateThuoc = async (thuoc) => {
   const pool = await poolPromise;
   await pool.request()
-    .input('MaThuoc',    sql.NVarChar, maThuoc)
-    .input('TenThuoc',   sql.NVarChar, thuoc.tenThuoc)
-    .input('DonGiaBan',  sql.Float,    thuoc.donGiaBan)
-    .input('MaCachDung', sql.NVarChar, thuoc.maCachDung)
-    .input('MaDVT',      sql.NVarChar, thuoc.maDVT)
+    .input('MaThuoc', sql.NVarChar, thuoc.MaThuoc)
+    .input('TenThuoc', sql.NVarChar, thuoc.TenThuoc)
+    .input('DonGiaBan', sql.Float, thuoc.DonGiaBan)
+    .input('MaCachDung', sql.NVarChar, thuoc.MaCachDung)
+    .input('MaDVT', sql.NVarChar, thuoc.MaDVT)
     .query(`
       UPDATE THUOC
-      SET TenThuoc   = @TenThuoc,
-          DonGiaBan  = @DonGiaBan,
+      SET TenThuoc = @TenThuoc,
+          DonGiaBan = @DonGiaBan,
           MaCachDung = @MaCachDung,
-          MaDVT      = @MaDVT
+          MaDVT = @MaDVT
       WHERE MaThuoc = @MaThuoc
     `);
 };
  
-exports.DeleteThuoc = async (maThuoc) => {
+exports.DeleteThuoc = async (MaThuoc) => {
   const pool = await poolPromise;
   await pool.request()
-    .input('MaThuoc', sql.NVarChar, maThuoc)
+    .input('MaThuoc', sql.NVarChar, MaThuoc)
     .query('DELETE FROM THUOC WHERE MaThuoc = @MaThuoc');
 };
  
-exports.IsThuocUsed = async (maThuoc) => {
+exports.IsThuocUsed = async (MaThuoc) => {
   const pool = await poolPromise;
   const result = await pool.request()
-    .input('MaThuoc', sql.NVarChar, maThuoc)
+    .input('MaThuoc', sql.NVarChar, MaThuoc)
     .query(`
       SELECT COUNT(*) AS cnt FROM CT_PHIEUKHAM WHERE MaThuoc = @MaThuoc
       UNION ALL

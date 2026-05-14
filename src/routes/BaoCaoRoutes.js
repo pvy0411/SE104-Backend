@@ -22,7 +22,7 @@ router.get(
     '/doanh-thu/thang-nam', 
     XacThuc, 
     PhanQuyen('LeTan'), 
-    BaoCaoController.LapBaoCaoDoanhThu
+    BaoCaoController.GetBaoCaoDoanhThu
 );
 
 router.get(

@@ -1,7 +1,7 @@
 const PhieuKhamService = require('../services/PhieuKhamService');
 
 class PhieuKhamController {
-    async create(req, res) {
+    async Create(req, res) {
         try {
             // MaBN lấy từ frontend gửi lên
             const { MaBN } = req.body; 
@@ -13,7 +13,7 @@ class PhieuKhamController {
                 return res.status(400).json({ status: 'error', message: 'Vui lòng cung cấp Mã bệnh nhân!' });
             }
 
-            const result = await PhieuKhamService.createPhieuKham(MaNV, MaBN);
+            const result = await PhieuKhamService.CreatePhieuKham(MaNV, MaBN);
 
             res.status(201).json({
                 status: 'success',

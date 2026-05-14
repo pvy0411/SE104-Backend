@@ -15,19 +15,18 @@ exports.GetById = async (id) => {
     return result.recordset[0] || null;
 };
  
-exports.Create = async ({ maCachDung, moTaCachDung }) => {
+exports.Create = async ({ MoTaCachDung }) => {
     const pool = await poolPromise;
     await pool.request()
-        .input('MaCachDung',   sql.NVarChar, maCachDung)
-        .input('MoTaCachDung', sql.NVarChar, moTaCachDung)
-        .query('INSERT INTO CACHDUNG (MaCachDung, MoTaCachDung) VALUES (@MaCachDung, @MoTaCachDung)');
+        .input('MoTaCachDung', sql.NVarChar, MoTaCachDung)
+        .query('INSERT INTO CACHDUNG (MoTaCachDung) VALUES (@MoTaCachDung)');
 };
  
-exports.Update = async (id, { moTaCachDung }) => {
+exports.Update = async (id, { MoTaCachDung }) => {
     const pool = await poolPromise;
     await pool.request()
-        .input('MaCachDung',   sql.NVarChar, id)
-        .input('MoTaCachDung', sql.NVarChar, moTaCachDung)
+        .input('MaCachDung', sql.NVarChar, id)
+        .input('MoTaCachDung', sql.NVarChar, MoTaCachDung)
         .query('UPDATE CACHDUNG SET MoTaCachDung = @MoTaCachDung WHERE MaCachDung = @MaCachDung');
 };
  

@@ -17,20 +17,17 @@ exports.SearchThuoc = async (keyword) => {
 };
 
 exports.CreateThuoc = async (thuoc) => {
-  if (!thuoc.maThuoc || !thuoc.tenThuoc)
-    throw { status: 400, message: 'Mã thuốc và tên thuốc không được để trống' };
-  const existing = await ThuocRepo.GetThuocById(thuoc.maThuoc);
-  if (existing) 
-    throw { status: 409, message: 'Mã thuốc đã tồn tại' };
+  if (!thuoc.TenThuoc)
+    throw { status: 400, message: 'Tên thuốc không được để trống' };
   await ThuocRepo.CreateThuoc(thuoc);
-  return await ThuocRepo.GetThuocById(thuoc.maThuoc);
+  return await ThuocRepo.GetThuocById(thuoc.MaThuoc);
 };
  
 exports.UpdateThuoc = async (id, thuoc) => {
   const existing = await ThuocRepo.GetThuocById(id);
   if (!existing) 
     throw { status: 404, message: 'Không tìm thấy thuốc' };
-  await ThuocRepo.UpdateThuoc(id, thuoc);
+  await ThuocRepo.UpdateThuoc(thuoc);
   return await ThuocRepo.GetThuocById(id);
 };
  

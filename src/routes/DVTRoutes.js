@@ -1,5 +1,5 @@
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 const DVTController = require('../controllers/DVTController');
 const { XacThuc, PhanQuyen } = require('../middlewares/AuthMiddleware');
 
@@ -18,7 +18,7 @@ router.get(
     DVTController.GetById
 );
 
-// Chỉ Lễ tân được thêm / sửa / xóa cách dùng 
+// Chỉ Lễ tân được thêm, sửa, xóa cách dùng 
 router.post(
     '/', 
     XacThuc, 

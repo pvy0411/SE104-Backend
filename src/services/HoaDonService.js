@@ -1,6 +1,6 @@
 const HoaDonRepo = require('../repositories/HoaDonRepo');
-const ThamSoService = require('../services/ThamSoService'); 
-const { getPool} = require('../config/database');
+const ThamSoRepo = require('../repositories/ThamSoRepo'); 
+const { poolPromise } = require('../config/database');
 const sql = require('mssql');
 
 exports.GetAll = async ({ page = 1, limit = 20 } = {}) => {
@@ -21,8 +21,8 @@ exports.ThanhToanHoaDon = async (MaPK) => {
     const existing = await HoaDonRepo.GetByMaPK(MaPK);
         if (existing) throw { status: 400, message: 'Phiếu khám này đã có hóa đơn' };
     // Gọi module ThamSo để lấy Tiền Khám
-    const ResThamSo = await ThamSoService.DanhSachThamSo('TienKham'); 
-    const TienKham = parseFloat(ResThamSo.GiaTri || ResThamSo);
+    const ResThamSo = await ThamSoRepo.getByName('TienKham'); 
+    const TienKham = parseFloat(ResThamSo);
 
     // Tỉnh tổng tiền thuốc 
     const TongTienThuoc = await HoaDonRepo.GetTongTienThuoc(MaPK);
@@ -30,7 +30,7 @@ exports.ThanhToanHoaDon = async (MaPK) => {
     const NgayLap = new Date();
 
     // Khởi tạo Transaction lưu vào DB
-    const pool = await getPool();
+    const pool = await poolPromise;
     const transaction = new sql.Transaction(pool);
     await transaction.begin();
     try {
@@ -51,7 +51,7 @@ exports.DeleteHoaDon = async (MaHD) => {
   const HoaDon = await HoaDonRepo.GetById(MaHD);
   if (!HoaDon) throw { status: 404, message: 'Không tìm thấy hóa đơn' };
  
-  const pool = await getPool();
+  const pool = await poolPromise;
   const transaction = new (sql.Transaction)(pool);
   await transaction.begin();
  

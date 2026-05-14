@@ -1,4 +1,4 @@
-const { poolPromiseoolPromise } = require('../config/database');
+const { poolPromise } = require('../config/database');
 const sql = require('mssql');
 
 exports.GetAll = async () => {
@@ -15,12 +15,19 @@ exports.GetById = async (id) => {
     return result.recordset[0] || null;
 };
 
-exports.Create = async ({ MaDVT, TenDVT }) => {
+exports.GetByName = async (TenDVT) => {
+    const pool = await poolPromise;
+    const result = await pool.request()
+        .input('TenDVT', sql.NVarChar, TenDVT)
+        .query('SELECT * FROM DONVITINH WHERE TenDVT = @TenDVT');
+    return result.recordset[0] || null;
+};
+
+exports.Create = async ({ TenDVT }) => {
     const pool = await poolPromise;
     await pool.request()
-        .input('MaDVT',  sql.NVarChar, MaDVT)
         .input('TenDVT', sql.NVarChar, TenDVT)
-        .query('INSERT INTO DONVITINH (MaDVT, TenDVT) VALUES (@MaDVT, @TenDVT)');
+        .query('INSERT INTO DONVITINH (TenDVT) VALUES (@TenDVT)');
 };
 
 exports.Update = async (id, { TenDVT }) => {

@@ -1,9 +1,9 @@
-const BenhNhanService = require('../services/BenhNhanService');
+const NhanVienService = require('../services/NhanVienService');
 
-class BenhNhanController {
+class NhanVienController {
     async GetAll(req, res) {
         try {
-            const data = await BenhNhanService.GetAll();
+            const data = await NhanVienService.GetAll();
             res.status(200).json({ status: 'success', data });
         } catch (error) {
             res.status(500).json({ status: 'error', message: error.message });
@@ -12,8 +12,8 @@ class BenhNhanController {
 
     async Create(req, res) {
         try {
-            const id = await BenhNhanService.Create(req.body);
-            res.status(201).json({ status: 'success', maBN: id });
+            const id = await NhanVienService.Create(req.body);
+            res.status(201).json({ status: 'success', message: 'Thêm nhân viên thành công', MaNV: id });
         } catch (error) {
             res.status(error.status || 500).json({ status: 'error', message: error.message });
         }
@@ -21,7 +21,7 @@ class BenhNhanController {
 
     async Update(req, res) {
         try {
-            const result = await BenhNhanService.Update(req.params.id, req.body);
+            const result = await NhanVienService.Update(req.params.id, req.body);
             res.status(200).json({ status: 'success', data: result });
         } catch (error) {
             res.status(error.status || 500).json({ status: 'error', message: error.message });
@@ -30,11 +30,11 @@ class BenhNhanController {
 
     async Delete(req, res) {
         try {
-            await BenhNhanService.Delete(req.params.id);
-            res.status(200).json({ status: 'success', message: 'Đã xóa bệnh nhân' });
+            const result = await NhanVienService.Delete(req.params.id);
+            res.status(200).json({ status: 'success', data: result });
         } catch (error) {
             res.status(error.status || 500).json({ status: 'error', message: error.message });
         }
     }
 }
-module.exports = new BenhNhanController();
+module.exports = new NhanVienController();

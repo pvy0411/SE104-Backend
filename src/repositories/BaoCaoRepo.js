@@ -1,6 +1,15 @@
 const { poolPromise } = require('../config/database');
 const sql = require('mssql');
 
+exports.IsExist = async (thang, nam) => {
+    const pool = await poolPromise;
+    const result = await pool.request()
+        .input('Thang', sql.Int, thang)
+        .input('Nam', sql.Int, nam)
+        .query('SELECT TOP 1 Thang FROM BCDOANHTHU WHERE Thang = @Thang AND Nam = @Nam');
+    return result.recordset[0] || null;
+};
+
 exports.GetDoanhThuTheoNgay = async (thang, nam) => {
     const pool = await poolPromise;
     const result = await pool.request()
@@ -34,16 +43,16 @@ exports.ThongKeDoanhThuTheoThang = async (thang, nam) => {
     .input('Nam', sql.Int, nam)
     .query(`
       SELECT 
-        DAY(hd.NgayLap)              AS Ngay,
-        COUNT(DISTINCT pk.MaBN)      AS SoBenhNhan,
-        ISNULL(SUM(hd.TongTien), 0)  AS DoanhThu
+        DAY(hd.NgayLap) AS Ngay,
+        COUNT(DISTINCT pk.MaBN) AS SoBenhNhan,
+        ISNULL(SUM(hd.TongTien), 0) AS DoanhThu
       FROM HOADON hd
       JOIN PHIEUKHAM pk ON hd.MaPK = pk.MaPK
       WHERE MONTH(hd.NgayLap) = @Thang AND YEAR(hd.NgayLap) = @Nam
       GROUP BY DAY(hd.NgayLap)
       ORDER BY Ngay
     `);
-  return { tongHop: bcResult.recordset[0],chiTiet: CT_TheoNgay.recordset };
+  return { TongHop: bcResult.recordset[0], ChiTiet: CT_TheoNgay.recordset };
 };
 
 exports.GetDoanhThuTheoNam = async (nam) => {
@@ -60,7 +69,7 @@ exports.GetDoanhThuTheoNam = async (nam) => {
 };
 
 exports.SaveBaoCaoDoanhThu = async (header, chiTiet) => {
-    const pool = await getPool();
+    const pool = await poolPromise;
     const transaction = new sql.Transaction(pool);
     await transaction.begin();
  
@@ -76,14 +85,13 @@ exports.SaveBaoCaoDoanhThu = async (header, chiTiet) => {
                 USING (SELECT @Thang AS Thang, @Nam AS Nam) AS src
                     ON target.Thang = src.Thang AND target.Nam = src.Nam
                 WHEN MATCHED THEN
-                    UPDATE SET TongDoanhThu   = @TongDoanhThu,
-                               TongSoBenhNhan = @TongSoBenhNhan
+                    UPDATE SET TongDoanhThu   = @TongDoanhThu, TongSoBenhNhan = @TongSoBenhNhan
                 WHEN NOT MATCHED THEN
                     INSERT (Thang, Nam, TongDoanhThu, TongSoBenhNhan)
                     VALUES (@Thang, @Nam, @TongDoanhThu, @TongSoBenhNhan);
             `);
  
-        // Xóa CT cũ (nếu lập lại), rồi insert mới
+        // Xóa CT cũ nếu đã lập, rồi insert mới
         await transaction.request()
             .input('Thang', sql.Int, header.Thang)
             .input('Nam', sql.Int, header.Nam)

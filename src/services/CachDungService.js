@@ -10,24 +10,21 @@ exports.GetById = async (id) => {
 };
 
 exports.Create = async (body) => {
-    const { maCachDung, moTaCachDung } = body;
-    if (!maCachDung || !moTaCachDung)
-        throw { status: 400, message: 'Mã cách dùng và mô tả không được để trống' };
-    const existing = await CachDungRepo.GetById(maCachDung);
-    if (existing) 
-        throw { status: 409, message: 'Mã cách dùng đã tồn tại' };
-    await CachDungRepo.Create({ maCachDung, moTaCachDung });
-    return CachDungRepo.GetById(maCachDung);
+    const { MoTaCachDung } = body;
+    if ( !MoTaCachDung)
+        throw { status: 400, message: 'Mô tả cách dùng không được để trống' };
+    const ID = await CachDungRepo.Create({ MoTaCachDung });
+    return CachDungRepo.GetById(ID);
 };
 
 exports.Update = async (id, body) => {
-    const { moTaCachDung } = body;
-    if (!moTaCachDung) 
+    const { MoTaCachDung } = body;
+    if (!MoTaCachDung) 
         throw { status: 400, message: 'Mô tả cách dùng không được để trống' };
     const existing = await CachDungRepo.GetById(id);
     if (!existing) 
         throw { status: 404, message: 'Không tìm thấy cách dùng' };
-    await CachDungRepo.Update(id, { moTaCachDung });
+    await CachDungRepo.Update(id, { MoTaCachDung });
     return CachDungRepo.GetById(id);
 };
 

@@ -1,31 +1,27 @@
-const jwt = require('jsonwebtoken');
 const AuthRepo = require('../repositories/AuthRepo');
+const jwt = require('jsonwebtoken');
 
 class AuthService {
-    async login(username, password) {
-        // 1. Tìm tài khoản
-        const account = await AuthRepo.findAccountByUsername(username);
-        if (!account) throw new Error('Tài khoản không tồn tại!');
-
-        // 2. So sánh mật khẩu 
-        if (account.MatKhau !== password) {
-            throw new Error('Mật khẩu không chính xác!');
+    async Login(username, password) {
+        const user = await AuthRepo.getUserByUsername(username);
+        
+        // Kiểm tra user có tồn tại và đúng mật khẩu không
+        if (!user || user.MatKhau !== password) {
+            throw { status: 401, message: 'Sai tên đăng nhập hoặc mật khẩu!' };
         }
 
-        // 3. Tạo JWT Token chứa thông tin cần thiết
-        const payload = {
-            MaNV: account.MaNV,
-            TenNV: account.TenNV,
-            MaCV: account.MaCV // Dùng để phân quyền sau này
-        };
+        // Tạo Token chứa MaNV và quan trọng nhất là TenChucVu để phân quyền
+        const token = jwt.sign(
+            { 
+                maNV: user.MaNV, 
+                TenChucVu: user.TenCV,
+                TenNV: user.TenNV 
+            }, 
+            process.env.JWT_SECRET || 'YOUR_SECRET_KEY', 
+            { expiresIn: '8h' }
+        );
 
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '12h' });
-
-        return {
-            token,
-            user: payload
-        };
+        return { token, ChucVu: user.TenCV, TenNV: user.TenNV };
     }
 }
-
 module.exports = new AuthService();

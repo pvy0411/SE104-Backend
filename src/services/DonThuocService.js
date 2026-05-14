@@ -1,23 +1,23 @@
 const DonThuocRepo = require('../repositories/DonThuocRepo');
 const ThuocRepo = require('../repositories/ThuocRepo');
 const PhieuKhamRepo = require('../repositories/PhieuKhamRepo'); 
-const { getPool } = require('../config/database');
+const { poolPromise } = require('../config/database');
 const sql = require('mssql');
 
 exports.KeDonThuoc = async (DonThuocData) => {
-    const pool = await getPool();
+    const pool = await poolPromise;
     const transaction = new sql.Transaction(pool);
     await transaction.begin();
 
     try {
         // Kiểm tra phiếu khám đã tồn tại chưa 
-        const phieuKham = await PhieuKhamRepo.getById(DonThuocData.MaPK);
-        if (!phieuKham) {
-            throw { status: 404, message: `Phiếu khám ${DonThuocData.MaPK} không tồn tại!` };
-        }
+        // const phieuKham = await PhieuKhamRepo.GetById(DonThuocData.MaPK);
+        // if (!phieuKham) {
+        //     throw { status: 404, message: `Phiếu khám ${DonThuocData.MaPK} không tồn tại!` };
+        // }
         // Duyệt qua danh sách thuốc để kiểm tra tồn kho và tính tiền
         for (const item of DonThuocData.ChiTiet) {
-            const thuoc = await ThuocRepo.getThuocById(item.MaThuoc);
+            const thuoc = await ThuocRepo.GetThuocById(item.MaThuoc);
             if (!thuoc) {
                 throw { status: 400, message: `Thuốc ${item.MaThuoc} không tồn tại trong danh mục` };
             }
@@ -35,7 +35,7 @@ exports.KeDonThuoc = async (DonThuocData) => {
                 }, transaction
             );
             // Cập nhật tồn kho thuốc
-            await ThuocRepo.updateStock(item.MaThuoc, -item.SoLuongThuoc, transaction);
+            await ThuocRepo.UpdateStock(item.MaThuoc, -item.SoLuongThuoc, transaction);
         }
 
         await transaction.commit();

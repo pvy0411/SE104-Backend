@@ -10,23 +10,22 @@ exports.GetById = async (id) => {
 };
 
 exports.Create = async (body) => {
-    const { maDVT, tenDVT } = body;
-    if (!maDVT || !tenDVT)
-        throw { status: 400, message: 'Mã và tên đơn vị tính không được để trống' };
-    const existing = await DonViTinhRepo.GetById(maDVT);
-    if (existing) throw { status: 409, message: 'Mã đơn vị tính đã tồn tại' };
-    await DonViTinhRepo.Create({ maDVT, tenDVT });
-    return DonViTinhRepo.GetById(maDVT);
+    const { TenDVT } = body;
+    if (!TenDVT)
+        throw { status: 400, message: 'Tên đơn vị tính không được để trống' };
+    await DonViTinhRepo.Create({ TenDVT });
+    // Lấy đơn vị tính vừa tạo để trả về
+    return await DonViTinhRepo.GetByName(TenDVT);
 };
 
 exports.Update = async (id, body) => {
-    const { tenDVT } = body;
-    if (!tenDVT) 
+    const { TenDVT } = body;
+    if (!TenDVT) 
         throw { status: 400, message: 'Tên đơn vị tính không được để trống' };
     const existing = await DonViTinhRepo.GetById(id);
     if (!existing) 
         throw { status: 404, message: 'Không tìm thấy đơn vị tính' };
-    await DonViTinhRepo.Update(id, { tenDVT });
+    await DonViTinhRepo.Update(id, { TenDVT });
     return DonViTinhRepo.GetById(id);
 };
 

@@ -1,32 +1,34 @@
 const express = require('express');
 const router = express.Router();
-const LoaiBenhController = require('../controllers/LoaiBenhController');
+const NhanVienController = require('../controllers/NhanVienController');
 const { XacThuc, PhanQuyen } = require('../middlewares/AuthMiddleware');
 
 router.get(
     '/', 
     XacThuc, 
-    LoaiBenhController.getAll
+    PhanQuyen('Admin'), 
+    NhanVienController.getAll
 );
 
 router.post(
     '/', 
     XacThuc, 
     PhanQuyen('Admin'), 
-    LoaiBenhController.create
+    NhanVienController.create
 );
 
 router.put(
     '/:id', 
     XacThuc, 
     PhanQuyen('Admin'), 
-    LoaiBenhController.update
+    NhanVienController.update
 );
+
 router.delete(
     '/:id', 
     XacThuc, 
     PhanQuyen('Admin'), 
-    LoaiBenhController.delete
+    NhanVienController.delete
 );
 
 module.exports = router;

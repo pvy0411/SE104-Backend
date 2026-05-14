@@ -18,16 +18,16 @@ exports.GetBaoCaoDoanhThu = async (thang, nam) => {
     if (!t || !n) throw { status: 400, message: 'Thiếu tháng hoặc năm' };
  
     // Kiểm tra báo cáo tháng này đã tồn tại chưa
-    const existing = await BaoCaoRepo.CheckBaoCaoExists(t, n);
+    const existing = await BaoCaoRepo.IsExist(t, n);
     if (existing) throw { status: 409, message: `Báo cáo tháng ${t}/${n} đã được lập` };
  
     // Tổng hợp từ HOADON: tổng doanh thu + tổng bệnh nhân
-    const tongHop = await BaoCaoRepo.ThongKeDoanhThuTheoThang(t, n);
-    const { TongDoanhThu, TongSoBenhNhan } = tongHop.tongHop;
+    const TongHop = await BaoCaoRepo.ThongKeDoanhThuTheoThang(t, n);
+    const { TongDoanhThu, TongSoBenhNhan } = TongHop.TongHop;
  
     // Chi tiết từng ngày trong tháng với tỷ lệ đóng góp vào tổng doanh thu
-    const chiTietTheoNgay = tongHop.chiTiet;
-    const chiTietVoiTyLe = chiTietTheoNgay.map(item => ({
+    const ChiTietTheoNgay = TongHop.ChiTiet;
+    const ChiTietVoiTyLe = ChiTietTheoNgay.map(item => ({
         Ngay:        item.Ngay,
         Thang:       t,
         Nam:         n,
@@ -40,13 +40,13 @@ exports.GetBaoCaoDoanhThu = async (thang, nam) => {
     // Lưu vào DB trong transaction
     await BaoCaoRepo.SaveBaoCaoDoanhThu(
         { Thang: t, Nam: n, TongDoanhThu, TongSoBenhNhan },
-        chiTietVoiTyLe
+        ChiTietVoiTyLe
     );
  
     return {
         Thang: t, Nam: n,
         TongDoanhThu, TongSoBenhNhan,
-        ChiTiet: chiTietVoiTyLe,
+        ChiTiet: ChiTietVoiTyLe,
     };
 };
 

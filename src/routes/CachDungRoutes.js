@@ -1,5 +1,5 @@
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 const CachDungController = require('../controllers/CachDungController');
 const { XacThuc, PhanQuyen } = require('../middlewares/AuthMiddleware');
 

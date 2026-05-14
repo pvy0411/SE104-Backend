@@ -5,15 +5,15 @@ const res_ = require('../utils/responseHelper.js');
 const GetAll = async (req, res) => {
   try {
     const { page = 1, limit = 20 } = req.query;
-    const data = await PhieuNhapService.getAll({ page: +page, limit: +limit });
-    res_.sendSuccess(res, 'Lấy danh sách phiếu nhập thành công', data, null, 200);
+    const data = await PhieuNhapService.GetAll({ page: +page, limit: +limit });
+    res_.SendSuccess(res, 'Lấy danh sách phiếu nhập thành công', data, null, 200);
     } 
   catch (err) {
     const status = err.status || 500;
     if (status >= 400 && status < 500) {
-      res_.sendFail(res, err.message, null, status);
+      res_.SendFail(res, err.message, null, status);
     } else {
-      res_.sendError(res, err.message, status);
+      res_.SendError(res, err.message, status);
     }
   }
 };
@@ -21,15 +21,15 @@ const GetAll = async (req, res) => {
 // Lấy 1 phiếu nhập kèm danh sách chi tiết thuốc
 const GetById = async (req, res) => {
   try {
-    const data = await PhieuNhapService.getById(req.params.id);
-    res_.sendSuccess(res, 'Lấy thông tin phiếu nhập thành công', data, null, 200);
+    const data = await PhieuNhapService.GetById(req.params.id);
+    res_.SendSuccess(res, 'Lấy thông tin phiếu nhập thành công', data, null, 200);
   } 
   catch (err) {
     const status = err.status || 500;
     if (status >= 400 && status < 500) {
-      res_.sendFail(res, err.message, null, status);
+      res_.SendFail(res, err.message, null, status);
     } else {
-      res_.sendError(res, err.message, status);
+      res_.SendError(res, err.message, status);
     }
   }
 };
@@ -39,15 +39,15 @@ const Create = async (req, res) => {
   try {
     const { chiTiet } = req.body;
     const maNV = req.user.MaNV;
-    const data = await PhieuNhapService.createPhieuNhap(maNV, chiTiet);
-    res_.sendSuccess(res, 'Tạo phiếu nhập thành công', data, null, 201);
+    const data = await PhieuNhapService.CreatePhieuNhap(maNV, chiTiet);
+    res_.SendSuccess(res, 'Tạo phiếu nhập thành công', data, null, 201);
   } 
   catch (err) {
     const status = err.status || 500;
     if (status >= 400 && status < 500) {
-      res_.sendFail(res, err.message, null, status);
+      res_.SendFail(res, err.message, null, status);
     } else {
-      res_.sendError(res, err.message, status);
+      res_.SendError(res, err.message, status);
     }
   }
 };
@@ -56,30 +56,30 @@ const Update = async (req, res) => {
   try {
     const { chiTiet } = req.body;
     const maNV = req.user.MaNV;
-    const data = await PhieuNhapService.updatePhieuNhap(req.params.id, maNV, chiTiet);
-    res_.sendSuccess(res, 'Cập nhật phiếu nhập thành công', data, null, 200);
+    const data = await PhieuNhapService.UpdatePhieuNhap(req.params.id, maNV, chiTiet);
+    res_.SendSuccess(res, 'Cập nhật phiếu nhập thành công', data, null, 200);
   } 
   catch (err) {
     const status = err.status || 500;
     if (status >= 400 && status < 500) {
-      res_.sendFail(res, err.message, null, status);
+      res_.SendFail(res, err.message, null, status);
     } else {
-      res_.sendError(res, err.message, status);
+      res_.SendError(res, err.message, status);
     }
   }
 };
  
 const Remove = async (req, res) => {
   try {
-    await PhieuNhapService.deletePhieuNhap(req.params.id);
-    res_.sendSuccess(res, 'Xóa phiếu nhập thành công', null, null, 200);
+    await PhieuNhapService.DeletePhieuNhap(req.params.id);
+    res_.SendSuccess(res, 'Xóa phiếu nhập thành công', null, null, 200);
   } 
   catch (err) {
     const status = err.status || 500;
     if (status >= 400 && status < 500) {
-      res_.sendFail(res, err.message, null, status);
+      res_.SendFail(res, err.message, null, status);
     } else {
-      res_.sendError(res, err.message, status);
+      res_.SendError(res, err.message, status);
     }
   }
 };

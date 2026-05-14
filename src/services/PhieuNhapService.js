@@ -1,7 +1,7 @@
 const PhieuNhapRepo = require('../repositories/PhieuNhapRepo');
 const ThuocRepo = require('../repositories/ThuocRepo');
-const ThamSoService = require('../services/ThamSoService');
-const { getPool, sql } = require('../config/database');
+const ThamSoRepo = require('../repositories/ThamSoRepo');
+const { poolPromise, sql } = require('../config/database');
 
 // Lấy danh sách phiếu nhập có phân trang
 const GetAll = ({ page, limit }) => {
@@ -19,22 +19,16 @@ const GetById = async (MaPN) => {
 
 // Tạo phiếu nhập 
 const Create = async (DataInput) => {
-    const { MaPN, NgayNhap, ChiTiet } = DataInput;
+    const { NgayNhap, ChiTiet } = DataInput;
     
     // Kiểm tra tính hợp lệ đầu vào
     if (!ChiTiet || ChiTiet.length === 0) {
         throw { status: 400, message: 'Phiếu nhập phải có ít nhất 1 dòng thuốc' };
     }
 
-    // Kiểm tra MaPN chưa tồn tại
-    const existing = await PhieuNhapRepo.GetById(MaPN);
-    if (existing) {
-        throw { status: 409, message: `Mã phiếu nhập '${MaPN}' đã tồn tại` };
-    }
-
     // Kiểm tra từng thuốc trong chi tiết có hợp lệ không
     for (const item of ChiTiet) {
-        const thuoc = await ThuocRepo.GetThuocById(item.MaThuoc); // Sửa hàm getById cho khớp với ThuocRepository
+        const thuoc = await ThuocRepo.GetThuocById(item.MaThuoc);
         if (!thuoc) {
             throw { status: 400, message: `Thuốc '${item.MaThuoc}' không tồn tại` };
         }
@@ -47,20 +41,21 @@ const Create = async (DataInput) => {
     }
 
     // Truy vấn đến tỷ lệ tính giá bán từ tham số
-    const ResThamSo = await ThamSoService.GetThamSoByName('TyLeTinhDonGiaBan');
-    const TyLe = parseFloat(ResThamSo.GiaTri || ResThamSo);
+    const ResThamSo = await ThamSoRepo.getByName('TyLeTinhDonGiaBan');
+    const TyLe = parseFloat(ResThamSo);
 
     // Tính tổng tiền nhập
     const TongTienNhap = ChiTiet.reduce((sum, item) => sum + (item.SoLuongNhap * item.DonGiaNhap), 0);
     
     // Tạo transaction để đảm bảo tính toàn vẹn dữ liệu
-    const pool = await getPool();
+    const pool = await poolPromise;
     const transaction = new sql.Transaction(pool);
     await transaction.begin();
 
     try {
         // Lưu PHIEUNHAPTHUOC với tổng tiền nhập đã tính toán
-        await PhieuNhapRepo.CreatePhieuNhap({ MaPN, NgayNhap, TongTienNhap: TongTienNhap }, transaction);
+        // const MaPN = await PhieuNhapRepo.GenerateMaPN(transaction);
+        const MaPN = await PhieuNhapRepo.CreatePhieuNhap({ NgayNhap, TongTienNhap }, transaction);
 
         // Vòng lặp lưu CT_PHIEUNHAPTHUOC và cập nhật tồn kho + giá bán
         for (const item of ChiTiet) {
@@ -72,6 +67,7 @@ const Create = async (DataInput) => {
             await ThuocRepo.UpdateInventoryAndPrice(item.MaThuoc, item.SoLuongNhap, DonGiaBanMoi, transaction);
         }
         await transaction.commit();
+        return await PhieuNhapRepo.GetById(MaPN);
     } catch (err) {
         await transaction.rollback();
         throw err;
@@ -82,7 +78,7 @@ const Create = async (DataInput) => {
 
 const UpdatePhieuNhap = async (MaPN, MaNV, ChiTiet) => {
     const existing = await PhieuNhapRepo.GetById(MaPN);
-    if (!existing.header) throw { status: 404, message: 'Không tìm thấy phiếu nhập' };
+    if (!existing) throw { status: 404, message: 'Không tìm thấy phiếu nhập' };
     if (!ChiTiet || ChiTiet.length === 0)
     throw { status: 400, message: 'Phiếu nhập phải có ít nhất một dòng thuốc' };
 
@@ -99,6 +95,8 @@ const UpdatePhieuNhap = async (MaPN, MaNV, ChiTiet) => {
     await PhieuNhapRepo.DeleteChiTiet(MaPN, transaction);
 
     let TongTienNhap = 0;
+    const ResThamSo = await ThamSoRepo.getByName('TyLeTinhDonGiaBan');
+    const TyLe = parseFloat(ResThamSo);
     for (const item of ChiTiet) {
         if (!item.MaThuoc || !item.DonGiaNhap || !item.SoLuongNhap)
         throw { status: 400, message: 'Thiếu thông tin chi tiết thuốc' };
@@ -109,8 +107,8 @@ const UpdatePhieuNhap = async (MaPN, MaNV, ChiTiet) => {
         TongTienNhap += ThanhTien;
 
         await PhieuNhapRepo.CreateChiTiet(
-        MaPN, item.MaThuoc, item.DonGiaNhap,
-        item.SoLuongNhap, ThanhTien, transaction
+            MaPN, item.MaThuoc, item.DonGiaNhap,
+            item.SoLuongNhap, ThanhTien, transaction
         );
 
         const DonGiaBan = item.DonGiaNhap * TyLe;
@@ -118,7 +116,7 @@ const UpdatePhieuNhap = async (MaPN, MaNV, ChiTiet) => {
     }
 
     // Cập nhật header
-    await PhieuNhapRepo.CreatePhieuNhap(MaPN, MaNV, existing.header.NgayNhap, TongTienNhap, transaction);
+    await PhieuNhapRepo.UpdateTongTien(MaNV, TongTienNhap, transaction);
     await transaction.commit();
     return { MaPN, TongTienNhap };
     } catch (err) {
@@ -130,7 +128,7 @@ const UpdatePhieuNhap = async (MaPN, MaNV, ChiTiet) => {
 // Xóa phiếu nhập
 const DeletePhieuNhap = async (MaPN) => {
     const existing = await PhieuNhapRepo.GetById(MaPN);
-    if (!existing.header) throw { status: 404, message: 'Không tìm thấy phiếu nhập' };
+    if (!existing) throw { status: 404, message: 'Không tìm thấy phiếu nhập' };
 
     const pool = await poolPromise;
     const transaction = new (require('mssql').Transaction)(pool);

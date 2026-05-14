@@ -20,16 +20,16 @@ const GetAll = async ({ page = 1, limit = 20 }) => {
 };
 
 // Lấy 1 phiếu kèm chi tiết các dòng thuốc
-const GetById = async (maPN) => {
+const GetById = async (MaPN) => {
     const pool = await poolPromise;
     const phieu = await pool.request()
-        .input('MaPN', sql.NVarChar, maPN)
+        .input('MaPN', sql.NVarChar, MaPN)
         .query('SELECT * FROM PHIEUNHAPTHUOC WHERE MaPN = @MaPN');
 
     if (!phieu.recordset[0]) return null;
 
     const ChiTiet = await pool.request()
-    .input('MaPN', sql.NVarChar, maPN)
+    .input('MaPN', sql.NVarChar, MaPN)
     .query(`
         SELECT ct.*, t.TenThuoc, t.DonGiaBan AS GiaBanHienTai
         FROM   CT_PHIEUNHAPTHUOC ct
@@ -40,25 +40,25 @@ const GetById = async (maPN) => {
 };
 
 // Insert PHIEUNHAPTHUOC vào database
-const CreatePhieuNhap = async ({ MaPN, NgayNhap, TongTienNhap }, transaction) => {
-    await transaction.request()
-        .input('MaPN',         sql.NVarChar,     MaPN)
-        .input('NgayNhap',     sql.DateTime,     NgayNhap)
+const CreatePhieuNhap = async ({ NgayNhap, TongTienNhap }, transaction) => {
+    const result = await transaction.request()
+        .input('NgayNhap', sql.DateTime, NgayNhap)
         .input('TongTienNhap', sql.Decimal(18,2), TongTienNhap)
         .query(`
-            INSERT INTO PHIEUNHAPTHUOC (MaPN, NgayNhap, TongTienNhap)
-            VALUES (@MaPN, @NgayNhap, @TongTienNhap)
+            INSERT INTO PHIEUNHAPTHUOC (NgayNhap, TongTienNhap)
+            VALUES (@NgayNhap, @TongTienNhap)
         `);
+    return result.recordset[0].MaPN; 
 };
 
 // Insert CT_PHIEUNHAPTHUOC vào database
 const CreateChiTiet = async ({ MaPN, MaThuoc, DonGiaNhap, SoLuongNhap, ThanhTien }, transaction) => {
     await transaction.request()
-        .input('MaPN',        sql.NVarChar,      MaPN)
-        .input('MaThuoc',     sql.NVarChar,      MaThuoc)
-        .input('DonGiaNhap',  sql.Decimal(18,2), DonGiaNhap)
-        .input('SoLuongNhap', sql.Int,           SoLuongNhap)
-        .input('ThanhTien',   sql.Decimal(18,2), ThanhTien)
+        .input('MaPN', sql.NVarChar, MaPN)
+        .input('MaThuoc', sql.NVarChar, MaThuoc)
+        .input('DonGiaNhap', sql.Decimal(18,2), DonGiaNhap)
+        .input('SoLuongNhap', sql.Int, SoLuongNhap)
+        .input('ThanhTien', sql.Decimal(18,2), ThanhTien)
         .query(`
             INSERT INTO CT_PHIEUNHAPTHUOC (MaPN, MaThuoc, DonGiaNhap, SoLuongNhap, ThanhTien)
             VALUES (@MaPN, @MaThuoc, @DonGiaNhap, @SoLuongNhap, @ThanhTien)
@@ -68,34 +68,34 @@ const CreateChiTiet = async ({ MaPN, MaThuoc, DonGiaNhap, SoLuongNhap, ThanhTien
 // Cập nhật TongTienNhap sau khi tính 
 const UpdateTongTien = async (MaPN, TongTienNhap, transaction) => {
     await transaction.request()
-        .input('MaPN',         sql.NVarChar,      MaPN)
+        .input('MaPN', sql.NVarChar, MaPN)
         .input('TongTienNhap', sql.Decimal(18,2), TongTienNhap)
         .query('UPDATE PHIEUNHAPTHUOC SET TongTienNhap = @TongTienNhap WHERE MaPN = @MaPN');
 };
 
 
-const DeleteChiTiet = async (maPN, transaction) => {
+const DeleteChiTiet = async (MaPN, transaction) => {
   const request = transaction.request();
   await request
-    .input('MaPN', sql.NVarChar, maPN)
+    .input('MaPN', sql.NVarChar, MaPN)
     .query('DELETE FROM CT_PHIEUNHAPTHUOC WHERE MaPN = @MaPN');
 };
  
-const DeletePhieuNhap = async (maPN, transaction) => {
+const DeletePhieuNhap = async (MaPN, transaction) => {
   const request = transaction.request();
   await request
-    .input('MaPN', sql.NVarChar, maPN)
+    .input('MaPN', sql.NVarChar, MaPN)
     .query('DELETE FROM PHIEUNHAPTHUOC WHERE MaPN = @MaPN');
 };
  
-const GenerateMaPN = async () => {
-  const pool = await poolPromise;
-  const result = await pool.request().query(`
-    SELECT TOP 1 MaPN FROM PHIEUNHAPTHUOC ORDER BY MaPN DESC
-  `);
-  if (!result.recordset[0]) return 'PN001';
-  const lastNum = parseInt(result.recordset[0].MaPN.replace('PN', '')) + 1;
-  return 'PN' + String(lastNum).padStart(3, '0');
-};
+// const GenerateMaPN = async (transaction) => {
+//   const request = transaction.request();
+//   const result = await request.query(`
+//     SELECT TOP 1 MaPN FROM PHIEUNHAPTHUOC ORDER BY MaPN DESC
+//   `);
+//   if (!result.recordset[0]) return 'PN001';
+//   const lastNum = parseInt(result.recordset[0].MaPN.replace('PN', '')) + 1;
+//   return 'PN' + String(lastNum).padStart(3, '0');
+// };
 
-module.exports = { GetAll, GetById, CreatePhieuNhap, CreateChiTiet, UpdateTongTien, DeleteChiTiet, DeletePhieuNhap, GenerateMaPN };
+module.exports = { GetAll, GetById, CreatePhieuNhap, CreateChiTiet, UpdateTongTien, DeleteChiTiet, DeletePhieuNhap };

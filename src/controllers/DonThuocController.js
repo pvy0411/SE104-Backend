@@ -10,19 +10,19 @@ exports.KeDon = async (req, res) => {
         if (!DonThuocData.MaPK) {
             throw { status: 400, message: 'Thiếu mã phiếu khám (MaPK)' };
         }
-        if (!DonThuocData.chiTiet || DonThuocData.chiTiet.length === 0) {
+        if (!DonThuocData.ChiTiet || DonThuocData.ChiTiet.length === 0) {
             throw { status: 400, message: 'Đơn thuốc phải có ít nhất 1 loại thuốc' };
         }
         // Gọi service xử lý transaction
         const data = await DonThuocService.KeDonThuoc(DonThuocData);
         // Trả về response thành công
-        res_.sendSuccess(res, 'Kê đơn thuốc thành công', data, null, 201);
+        res_.SendSuccess(res, 'Kê đơn thuốc thành công', data, null, 201);
     } catch (e) {
         const status = e.status || 500;
         if (status >= 400 && status < 500) {
-            res_.sendFail(res, e.message, null, status);
+            res_.SendFail(res, e.message, null, status);
         } else {
-            res_.sendError(res, e.message, status);
+            res_.SendError(res, e.message, status);
         }
     }
 };
