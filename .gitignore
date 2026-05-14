@@ -11,7 +11,3 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 
-package-lock.json
-package.json
-Readme.md
-server.js
