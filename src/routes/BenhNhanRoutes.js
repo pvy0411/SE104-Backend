@@ -6,26 +6,26 @@ const {XacThuc, PhanQuyen} = require('../middlewares/AuthMiddleware');
 router.get(
     '/', 
     XacThuc, 
-    BenhNhanController.getAll
+    BenhNhanController.GetAll
 );
 
 router.post(
     '/', 
     XacThuc, 
-    BenhNhanController.create
+    BenhNhanController.Create
 );
 
 router.put(
     '/:id', 
     XacThuc, 
     PhanQuyen('LeTan'), 
-    BenhNhanController.update
+    BenhNhanController.Update
 );
 
 router.delete(
     '/:id', 
     XacThuc, 
-    BenhNhanController.delete
+    BenhNhanController.Delete
 );
 
 module.exports = router;

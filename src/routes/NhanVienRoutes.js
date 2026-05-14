@@ -7,28 +7,28 @@ router.get(
     '/', 
     XacThuc, 
     PhanQuyen('Admin'), 
-    NhanVienController.getAll
+    NhanVienController.GetAll
 );
 
 router.post(
     '/', 
     XacThuc, 
     PhanQuyen('Admin'), 
-    NhanVienController.create
+    NhanVienController.Create
 );
 
 router.put(
     '/:id', 
     XacThuc, 
     PhanQuyen('Admin'), 
-    NhanVienController.update
+    NhanVienController.Update
 );
 
 router.delete(
     '/:id', 
     XacThuc, 
     PhanQuyen('Admin'), 
-    NhanVienController.delete
+    NhanVienController.Delete
 );
 
 module.exports = router;

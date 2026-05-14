@@ -6,27 +6,27 @@ const { XacThuc, PhanQuyen } = require('../middlewares/AuthMiddleware');
 router.get(
     '/', 
     XacThuc, 
-    LoaiBenhController.getAll
+    LoaiBenhController.GetAll
 );
 
 router.post(
     '/', 
     XacThuc, 
     PhanQuyen('Admin'), 
-    LoaiBenhController.create
+    LoaiBenhController.Create
 );
 
 router.put(
     '/:id', 
     XacThuc, 
     PhanQuyen('Admin'), 
-    LoaiBenhController.update
+    LoaiBenhController.Update
 );
 router.delete(
     '/:id', 
     XacThuc, 
     PhanQuyen('Admin'), 
-    LoaiBenhController.delete
+    LoaiBenhController.Delete
 );
 
 module.exports = router;

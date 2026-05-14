@@ -7,7 +7,7 @@ router.post(
     '/', 
     XacThuc, 
     PhanQuyen('BacSi'), 
-    PhieuKhamController.create
+    PhieuKhamController.Create
 );
 
 module.exports = router;

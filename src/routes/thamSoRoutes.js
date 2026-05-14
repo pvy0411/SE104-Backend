@@ -6,19 +6,19 @@ const { XacThuc, PhanQuyen } = require('../middlewares/AuthMiddleware');
 router.get(
     '/', 
     XacThuc, 
-    ThamSoController.getAll
+    ThamSoController.GetAll
 );
 
 router.get(
     '/:name', 
     XacThuc, 
-    ThamSoController.getByName
+    ThamSoController.GetByName
 );
 router.put(
     '/:name', 
     XacThuc, 
     PhanQuyen('Admin'), 
-    ThamSoController.update
+    ThamSoController.Update
 );
 
 module.exports = router;
