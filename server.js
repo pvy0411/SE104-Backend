@@ -1,14 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const rootRoutes = require('./src/routes/Index');
+const rootRoutes = require('./src/routes/index');
 const { sendError } = require('./src/utils/responseHelper');
 
 const app = express();
 
 // Middleware
 app.use(cors());
-app.use(express.json()); // Phân tích JSON body
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Định tuyến API
@@ -35,6 +35,26 @@ app.use('/api/phieu-kham', require('./src/routes/PhieuKhamRoutes'));
 // Loại bệnh
 app.use('/api/benh', require('./src/routes/LoaiBenhRoutes'));
 
+// Thuốc
+app.use('/api/thuoc', require('./src/routes/ThuocRoutes'));
+
+// Phiếu nhập thuốc
+app.use('/api/phieunhap', require('./src/routes/PhieuNhapRoutes'));
+
+// Đơn vị tính
+app.use('/api/dvt', require('./src/routes/DVTRoutes'));
+
+// Cách dùng
+app.use('/api/cachdung', require('./src/routes/CachDungRoutes'));
+
+// Hóa đơn
+app.use('/api/hoadon', require('./src/routes/HoaDonRoutes'));
+
+// Đơn thuốc
+app.use('/api/donthuoc', require('./src/routes/DonThuocRoutes'));
+
+// Báo cáo
+app.use('/api/baocao', require('./src/routes/BaoCaoRoutes'));
 
 // Xử lý route không tồn tại (404)
 app.use((req, res) => {
@@ -57,4 +77,3 @@ app.listen(PORT, () => {
     // Kích hoạt kết nối DB ngay khi chạy server
     require('./src/config/database'); 
 });
-

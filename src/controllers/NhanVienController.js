@@ -1,36 +1,36 @@
 const NhanVienService = require('../services/NhanVienService');
 
 class NhanVienController {
-    async getAll(req, res) {
+    async GetAll(req, res) {
         try {
-            const data = await NhanVienService.getAll();
+            const data = await NhanVienService.GetAll();
             res.status(200).json({ status: 'success', data });
         } catch (error) {
             res.status(500).json({ status: 'error', message: error.message });
         }
     }
 
-    async create(req, res) {
+    async Create(req, res) {
         try {
-            const id = await NhanVienService.create(req.body);
+            const id = await NhanVienService.Create(req.body);
             res.status(201).json({ status: 'success', message: 'Thêm nhân viên thành công', MaNV: id });
         } catch (error) {
             res.status(error.status || 500).json({ status: 'error', message: error.message });
         }
     }
 
-    async update(req, res) {
+    async Update(req, res) {
         try {
-            const result = await NhanVienService.update(req.params.id, req.body);
+            const result = await NhanVienService.Update(req.params.id, req.body);
             res.status(200).json({ status: 'success', data: result });
         } catch (error) {
             res.status(error.status || 500).json({ status: 'error', message: error.message });
         }
     }
 
-    async delete(req, res) {
+    async Delete(req, res) {
         try {
-            const result = await NhanVienService.delete(req.params.id);
+            const result = await NhanVienService.Delete(req.params.id);
             res.status(200).json({ status: 'success', data: result });
         } catch (error) {
             res.status(error.status || 500).json({ status: 'error', message: error.message });

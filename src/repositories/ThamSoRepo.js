@@ -1,13 +1,13 @@
 const { sql, poolPromise } = require('../config/database');
 
 class ThamSoRepo {
-    async getAll() {
+    async GetAll() {
         const pool = await poolPromise;
         const result = await pool.request().query('SELECT * FROM THAMSO');
         return result.recordset;
     }
 
-    async getByName(name) {
+    async GetByName(name) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('name', sql.NVarChar, name)
@@ -15,7 +15,7 @@ class ThamSoRepo {
         return result.recordset[0]?.GiaTri;
     }
 
-    async update(name, value) {
+    async Update(name, value) {
         const pool = await poolPromise;
         await pool.request()
             .input('name', sql.NVarChar, name)

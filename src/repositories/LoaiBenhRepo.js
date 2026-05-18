@@ -1,13 +1,13 @@
 const { sql, poolPromise } = require('../config/database');
 
 class LoaiBenhRepo {
-    async getAll() {
+    async GetAll() {
         const pool = await poolPromise;
         const result = await pool.request().query('SELECT * FROM LOAIBENH');
         return result.recordset;
     }
 
-    async create(tenBenh) {
+    async Create(tenBenh) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('TenBenh', sql.NVarChar, tenBenh)
@@ -19,7 +19,7 @@ class LoaiBenhRepo {
         return result.recordset[0].MaLoaiBenh;
     }
 
-    async update(maLoaiBenh, tenBenh) {
+    async Update(maLoaiBenh, tenBenh) {
         const pool = await poolPromise;
         await pool.request()
             .input('MaLoaiBenh', sql.Int, maLoaiBenh)
@@ -27,7 +27,7 @@ class LoaiBenhRepo {
             .query('UPDATE LOAIBENH SET TenBenh = @TenBenh WHERE MaLoaiBenh = @MaLoaiBenh');
     }
 
-    async checkDaSuDung(maLoaiBenh) {
+    async CheckDaSuDung(maLoaiBenh) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('MaLoaiBenh', sql.Int, maLoaiBenh)
@@ -35,7 +35,7 @@ class LoaiBenhRepo {
         return result.recordset[0].SoLan > 0;
     }
 
-    async remove(maLoaiBenh) {
+    async Remove(maLoaiBenh) {
         const pool = await poolPromise;
         await pool.request()
             .input('MaLoaiBenh', sql.Int, maLoaiBenh)

@@ -2,7 +2,7 @@ const AuthRepo = require('../repositories/AuthRepo');
 const jwt = require('jsonwebtoken');
 
 class AuthService {
-    async login(username, password) {
+    async Login(username, password) {
         const user = await AuthRepo.getUserByUsername(username);
         
         // Kiểm tra user có tồn tại và đúng mật khẩu không

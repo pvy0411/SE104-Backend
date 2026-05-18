@@ -1,7 +1,7 @@
 const { sql, poolPromise } = require('../config/database');
 
 class PhieuKhamRepo {
-    async create(data) {
+    async Create(data) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('MaNV', sql.Int, data.MaNV)
@@ -15,7 +15,7 @@ class PhieuKhamRepo {
         return result.recordset[0].MaPK;
     }
 
-    async countByDate(date) {
+    async CountByDate(date) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('date', sql.Date, date)

@@ -3,9 +3,32 @@ const router = express.Router();
 const NhanVienController = require('../controllers/NhanVienController');
 const { XacThuc, PhanQuyen } = require('../middlewares/AuthMiddleware');
 
-router.get('/', XacThuc, PhanQuyen('Admin'), NhanVienController.getAll);
-router.post('/', XacThuc, PhanQuyen('Admin'), NhanVienController.create);
-router.put('/:id', XacThuc, PhanQuyen('Admin'), NhanVienController.update);
-router.delete('/:id', XacThuc, PhanQuyen('Admin'), NhanVienController.delete);
+router.get(
+    '/', 
+    XacThuc, 
+    PhanQuyen('Admin'), 
+    NhanVienController.GetAll
+);
+
+router.post(
+    '/', 
+    XacThuc, 
+    PhanQuyen('Admin'), 
+    NhanVienController.Create
+);
+
+router.put(
+    '/:id', 
+    XacThuc, 
+    PhanQuyen('Admin'), 
+    NhanVienController.Update
+);
+
+router.delete(
+    '/:id', 
+    XacThuc, 
+    PhanQuyen('Admin'), 
+    NhanVienController.Delete
+);
 
 module.exports = router;

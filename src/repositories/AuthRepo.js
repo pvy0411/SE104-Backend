@@ -1,7 +1,7 @@
 const { sql, poolPromise } = require('../config/database');
 
 class AuthRepo {
-    async getUserByUsername(username) {
+    async GetUserByUsername(username) {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('username', sql.VarChar, username)

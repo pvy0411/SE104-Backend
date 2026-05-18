@@ -2,9 +2,9 @@ const LoaiBenhService = require('../services/LoaiBenhService');
 
 class LoaiBenhController {
     // Lấy danh sách tất cả loại bệnh
-    async getAll(req, res) {
+    async GetAll(req, res) {
         try {
-            const data = await LoaiBenhService.getAll();
+            const data = await LoaiBenhService.GetAll();
             res.status(200).json({
                 status: 'success',
                 data: data
@@ -18,7 +18,7 @@ class LoaiBenhController {
     }
 
     // Thêm loại bệnh mới (Dòng số 7 bên Route gọi hàm này)
-    async create(req, res) {
+    async Create(req, res) {
         try {
             const { TenBenh } = req.body; // Lấy TenBenh từ body JSON gửi lên
             
@@ -29,7 +29,7 @@ class LoaiBenhController {
                 });
             }
 
-            const id = await LoaiBenhService.create(TenBenh);
+            const id = await LoaiBenhService.Create(TenBenh);
             res.status(201).json({
                 status: 'success',
                 message: 'Thêm loại bệnh thành công',
@@ -44,12 +44,12 @@ class LoaiBenhController {
     }
 
     // Cập nhật thông tin loại bệnh
-    async update(req, res) {
+    async Update(req, res) {
         try {
             const maLoaiBenh = req.params.id;
             const { TenBenh } = req.body;
 
-            const result = await LoaiBenhService.update(maLoaiBenh, TenBenh);
+            const result = await LoaiBenhService.Update(maLoaiBenh, TenBenh);
             res.status(200).json({
                 status: 'success',
                 data: result
@@ -63,10 +63,10 @@ class LoaiBenhController {
     }
 
     // Xóa loại bệnh
-    async delete(req, res) {
+    async Delete(req, res) {
         try {
             const maLoaiBenh = req.params.id;
-            const result = await LoaiBenhService.delete(maLoaiBenh);
+            const result = await LoaiBenhService.Delete(maLoaiBenh);
             res.status(200).json({
                 status: 'success',
                 data: result

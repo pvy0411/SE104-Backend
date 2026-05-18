@@ -1,5 +1,5 @@
 // Định dang ngày tháng cho DB (SQL Server chấp nhận định dạng YYYY-MM-DD)
-const getDateForDB = () => {
+const GetDateForDB = () => {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -9,7 +9,7 @@ const getDateForDB = () => {
 };
 
 // Định dạng ngày tháng cho hiển thị cho người dùng (DD-MM-YYYY)
-const getDateForDisplay = () => {
+const GetDateForDisplay = () => {
     const today = new Date();
     const day = String(today.getDate()).padStart(2, '0');
     const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -19,6 +19,6 @@ const getDateForDisplay = () => {
 };
 
 module.exports = {
-    getDateForDB,
-    getDateForDisplay
+    GetDateForDB,
+    GetDateForDisplay
 };
