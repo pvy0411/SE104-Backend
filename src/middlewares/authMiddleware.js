@@ -17,17 +17,17 @@ const XacThuc = (req, res, next) => {
 };
 
 // MIDDLEWARE PHÂN QUYỀN
-const PhanQuyen = (...danhSachQuyen) => {
+const PhanQuyen = (...DanhSachQuyen) => {
     return (req, res, next) => {
         if (!req.user || !req.user.TenChucVu) {
             return res.status(401).json({ message: 'Lỗi xác thực: Không tìm thấy thông tin chức vụ!' });
         }
-        const chucVu = req.user.TenChucVu; 
+        const ChucVu = req.user.TenChucVu; 
         
-        if (chucVu === 'Admin' || danhSachQuyen.includes(chucVu)) {
+        if (ChucVu === 'Admin' || DanhSachQuyen.includes(ChucVu)) {
             next(); 
         } else {
-            res.status(403).json({ message: `Lỗi phân quyền: Chức vụ '${chucVu}' không được phép thực hiện thao tác này` });
+            res.status(403).json({ message: `Lỗi phân quyền: Chức vụ '${ChucVu}' không được phép thực hiện thao tác này` });
         }
     };
 };
