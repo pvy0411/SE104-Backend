@@ -14,7 +14,7 @@ CREATE TABLE CHUYENKHOA
 CREATE TABLE NHANVIEN
 (
 	MaNV int IDENTITY(1,1) Primary key,
-	TenNV nvarchar(100) NOT NULL,
+	TenNV NVARCHAR(100) NOT NULL,
 	CCCD VARCHAR(12) UNIQUE,
 	GioiTinh NVARCHAR(3) NOT NULL,
 	NgaySinh Date NOT NULL,
@@ -1067,4 +1067,3 @@ INSERT INTO CT_PHIEUKHAM (MaPK, MaThuoc, SoLuongThuoc, DonGiaBan, ThanhTien) VAL
 (9, 1, 10, 5000.00, 50000.00), -- Kê 10 viên Paracetamol
 (9, 5, 2, 25000.00, 50000.00);  -- Kê 2 chai Sirô ho
 GO
-
