@@ -186,6 +186,9 @@ CREATE TABLE THAMSO
 ---------------------------------------------------------------
 -- TRIGGER
 ---------------------------------------------------------------
+UPDATE BENHNHAN
+SET GioiTinh = N'Nữ'
+WHERE GioiTinh = 'N?';
 -- trigger: soluongton >=0
 ALTER TABLE THUOC
 ADD CONSTRAINT chk_thuoc_soluongton_khongam
